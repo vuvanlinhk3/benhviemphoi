@@ -59,14 +59,14 @@ model.compile(optimizer=Adam(learning_rate=1e-4),
 # --- 5. Callback: EarlyStopping & ModelCheckpoint ---
 callbacks = [
     EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True, verbose=1),
-    ModelCheckpoint("best_model.h5", monitor='val_loss', save_best_only=True, verbose=1)
+    ModelCheckpoint("best_model.keras", monitor='val_loss', save_best_only=True, verbose=1)
 ]
 
 # --- 6. Train ---
 history = model.fit(
     train_generator,
     validation_data=val_generator,
-    epochs=20,  # Không quá nhiều epoch
+    epochs=50,
     callbacks=callbacks
 )
 
@@ -84,8 +84,8 @@ print("📊 Classification Report:")
 print(classification_report(y_true, y_pred, target_names=labels))
 
 # --- 9. Lưu mô hình đã huấn luyện ---
-model.save("final_densenet121_pneumonia_model1.h5")
-print("💾 Mô hình đã lưu tại:", os.path.abspath("final_densenet121_pneumonia_model1.h5"))
+model.save("final_densenet121_pneumonia_model1.keras")
+print("💾 Mô hình đã lưu tại:", os.path.abspath("final_densenet121_pneumonia_model1.keras"))
 
 # --- 10. Vẽ biểu đồ ---
 plt.plot(history.history['accuracy'], label='Train Acc')
