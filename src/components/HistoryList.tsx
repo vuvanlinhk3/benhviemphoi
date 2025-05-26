@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useApp } from '../contexts/AppContext';
 import { Card, CardBody } from './ui/Card';
@@ -8,10 +8,15 @@ import HistoryItem from './HistoryItem';
 
 const HistoryList: React.FC = () => {
   const { t } = useLanguage();
-  const { analysisHistory } = useApp();
+  const { analysisHistory, loadHistory, isHistoryLoading } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'pneumonia' | 'normal'>('all');
-  
+
+  // Tải lịch sử khi component được mount
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
+
   const filteredHistory = analysisHistory.filter(item => {
     const matchesSearch = searchTerm === '' || 
       item.id.toLowerCase().includes(searchTerm.toLowerCase());
@@ -23,14 +28,14 @@ const HistoryList: React.FC = () => {
     
     return matchesSearch && matchesFilter;
   });
-  
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors duration-200">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
           {t('analysisHistory')}
         </h2>
-        
+
         {/* Search and Filter */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-grow">
@@ -45,7 +50,7 @@ const HistoryList: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               variant={filterType === 'all' ? 'primary' : 'outline'}
@@ -70,9 +75,18 @@ const HistoryList: React.FC = () => {
             </Button>
           </div>
         </div>
-        
-        {/* Results */}
-        {filteredHistory.length > 0 ? (
+
+        {/* Loading or Results */}
+        {isHistoryLoading ? (
+          <Card>
+            <CardBody className="flex flex-col items-center justify-center py-12">
+              <Clock className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-4 animate-spin" />
+              <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t('loadingHistory') || 'Đang tải lịch sử...'}
+              </h3>
+            </CardBody>
+          </Card>
+        ) : filteredHistory.length > 0 ? (
           <div className="space-y-4">
             {filteredHistory.map((item) => (
               <HistoryItem key={item.id} item={item} />

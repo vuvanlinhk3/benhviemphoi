@@ -56,7 +56,7 @@ export const analyzeImage = async (file: File) => {
     }
 
     const data = await response.json();
-    
+    console.log(data)
     // Validate response structure
     if (!data.result || typeof data.pneumonia_prob !== 'number') {
       throw new Error('Invalid API response structure');
@@ -71,6 +71,30 @@ export const analyzeImage = async (file: File) => {
 
   } catch (error) {
     console.error('API call failed:', error);
+    throw error;
+  }
+};
+
+export const getAnalysisHistory = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/history');
+    
+    if (!response.ok) throw new Error(`Lỗi HTTP! Status: ${response.status}`);
+
+    const data = await response.json();
+    console.log(data)
+    return data.map((item: any) => ({
+      id: item.id.toString(),
+      prediction: item.result,
+      probabilities: {
+        pneumonia: item.pneumonia_prob,
+        normal: item.normal_prob
+      },
+      timestamp: item.analyzed_at
+    }));
+
+  } catch (error) {
+    console.error('Lỗi tải lịch sử:', error);
     throw error;
   }
 };

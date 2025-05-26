@@ -126,13 +126,13 @@
 
 
 // ---------------------------------------
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {useCallback, createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '../hooks/useToast';
-import { analyzeImage } from '../services/api';
+import { analyzeImage, getAnalysisHistory } from '../services/api';
 
 export type Page = 'home' | 'result' | 'history' | 'guide';
 
-type AnalysisResult = {
+export type AnalysisResult = {
   id: string;
   prediction: 'Pneumonia' | 'Normal';
   probabilities: {
@@ -154,10 +154,12 @@ interface AppContextType {
   
   // Analysis
   isAnalyzing: boolean;
+  isHistoryLoading: boolean;
   currentResult: AnalysisResult | null;
   analyzeCurrentImage: () => Promise<void>;
   analysisHistory: AnalysisResult[];
   clearResults: () => void;
+  loadHistory: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -167,12 +169,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [currentResult, setCurrentResult] = useState<AnalysisResult | null>(null);
   const [analysisHistory, setAnalysisHistory] = useState<AnalysisResult[]>([]);
 
   const { showToast } = useToast();
 
-  // Image preview handler
+  // Xử lý preview ảnh
   useEffect(() => {
     if (selectedImage) {
       const url = URL.createObjectURL(selectedImage);
@@ -182,13 +185,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setPreviewUrl(null);
   }, [selectedImage]);
 
-  const navigateTo = (page: Page) => {
-    setCurrentPage(page);
-  };
+  // Navigation
+  const navigateTo = (page: Page) => setCurrentPage(page);
 
+  // Xử lý phân tích ảnh
   const analyzeCurrentImage = async () => {
     if (!selectedImage) {
-      showToast({ type: 'error', message: 'Please select an image first' });
+      showToast({ type: 'error', message: 'Vui lòng chọn ảnh trước khi phân tích' });
       return;
     }
 
@@ -209,16 +212,30 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       setCurrentResult(newResult);
       setAnalysisHistory(prev => [newResult, ...prev]);
       navigateTo('result');
-      showToast({ type: 'success', message: 'Analysis completed successfully' });
+      showToast({ type: 'success', message: 'Phân tích thành công!' });
 
     } catch (error) {
-      console.error('Analysis error:', error);
-      showToast({ type: 'error', message: 'Failed to analyze image' });
+      console.error('Lỗi phân tích:', error);
+      showToast({ type: 'error', message: 'Lỗi phân tích ảnh' });
     } finally {
       setIsAnalyzing(false);
     }
   };
 
+  const loadHistory = useCallback(async () => {
+  setIsHistoryLoading(true);
+  try {
+    const history = await getAnalysisHistory();
+    setAnalysisHistory(history);
+  } catch (error) {
+    console.error('Lỗi tải lịch sử:', error);
+    showToast({ type: 'error', message: 'Lỗi tải lịch sử phân tích' });
+  } finally {
+    setIsHistoryLoading(false);
+  }
+}, []);
+
+  // Xóa kết quả
   const clearResults = () => {
     setSelectedImage(null);
     setCurrentResult(null);
@@ -234,10 +251,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setSelectedImage,
         previewUrl,
         isAnalyzing,
+        isHistoryLoading,
         currentResult,
         analyzeCurrentImage,
         analysisHistory,
-        clearResults
+        clearResults,
+        loadHistory
       }}
     >
       {children}
