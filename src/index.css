@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Trong file CSS global */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+}

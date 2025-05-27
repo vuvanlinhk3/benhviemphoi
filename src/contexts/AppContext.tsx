@@ -140,6 +140,7 @@ export type AnalysisResult = {
     normal: number;
   };
   timestamp: string;
+  imagePath: string;
 };
 
 interface AppContextType {
@@ -160,6 +161,8 @@ interface AppContextType {
   analysisHistory: AnalysisResult[];
   clearResults: () => void;
   loadHistory: () => Promise<void>;
+  setCurrentResult: (result: AnalysisResult | null) => void;
+  clearCurrentResult: () => void; // Thêm dòng này
 }
 
 const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -174,7 +177,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [analysisHistory, setAnalysisHistory] = useState<AnalysisResult[]>([]);
 
   const { showToast } = useToast();
-
+  const clearCurrentResult = () => {
+     setSelectedImage(null);
+    setCurrentResult(null);
+    navigateTo('home');
+  };
   // Xử lý preview ảnh
   useEffect(() => {
     if (selectedImage) {
@@ -206,7 +213,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           pneumonia: apiResponse.pneumonia_prob,
           normal: apiResponse.normal_prob
         },
-        timestamp: apiResponse.analyzed_at
+        timestamp: apiResponse.analyzed_at,
+        imagePath: apiResponse.image_path
       };
 
       setCurrentResult(newResult);
@@ -245,6 +253,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AppContext.Provider
       value={{
+        setCurrentResult, 
+        clearCurrentResult,
         currentPage,
         navigateTo,
         selectedImage,

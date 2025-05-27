@@ -154,7 +154,7 @@ const GuideContent: React.FC = () => {
               <CardBody>
                 <div className="space-y-4">
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    <strong>{t('disclaimer')}</strong> {t('disclaimerDetail')}
+                    <strong>{t('disclaimers')}</strong> {t('disclaimerDetail')}
                   </p>
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
                     <strong>{t('medicalAdvice')}</strong> {t('medicalAdviceDetail')}

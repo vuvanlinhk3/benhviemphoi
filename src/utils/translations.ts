@@ -78,7 +78,7 @@ export const translations: TranslationsType = {
     normalResultExplanation: 'Indicates the AI has not detected patterns consistent with pneumonia. Lung fields appear clear on the X-ray.',
     confidenceScoreExplanation: 'Shows how confident the AI is in its diagnosis. Higher percentages indicate greater confidence.',
     importantNotes: 'Important Notes',
-    disclaimer: 'Disclaimer:',
+    disclaimers: 'Disclaimer:',
     disclaimerDetail: 'This application is designed as a screening tool and not for definitive diagnosis. Always consult healthcare professionals.',
     medicalAdvice: 'Medical Advice:',
     medicalAdviceDetail: 'The results from this tool should not replace professional medical advice, diagnosis, or treatment.',
@@ -95,15 +95,16 @@ export const translations: TranslationsType = {
     termsOfService: 'Terms of Service',
     sourceCode: 'Source Code',
     madeWith: 'Made with',
+    xrayImage: 'X-ray Image',
   },
   vi: {
     // App
-    appName: 'PneumoDetect',
+    appName: 'PHVP',
     appTitle: 'Công Cụ Phát Hiện Viêm Phổi',
     appDescription: 'Tải lên hình ảnh X-quang ngực để phát hiện viêm phổi bằng mô hình AI tiên tiến của chúng tôi',
     howItWorks: 'Cách Thức Hoạt Động',
     howItWorksDescription: 'Ứng dụng của chúng tôi sử dụng mô hình học sâu DenseNet121 được đào tạo trên hàng nghìn hình ảnh X-quang ngực để phát hiện dấu hiệu viêm phổi với độ chính xác cao.',
-    
+    xrayImage: 'Ảnh X-quang',
     // Navigation
     home: 'Trang Chủ',
     history: 'Lịch Sử',
@@ -165,7 +166,7 @@ export const translations: TranslationsType = {
     normalResultExplanation: 'Cho biết AI không phát hiện các mẫu phù hợp với viêm phổi. Trường phổi trông rõ ràng trên X-quang.',
     confidenceScoreExplanation: 'Hiển thị mức độ tin cậy của AI trong chẩn đoán. Tỷ lệ phần trăm cao hơn cho thấy độ tin cậy cao hơn.',
     importantNotes: 'Lưu Ý Quan Trọng',
-    disclaimer: 'Miễn Trừ Trách Nhiệm:',
+    disclaimers: 'Miễn Trừ Trách Nhiệm:',
     disclaimerDetail: 'Ứng dụng này được thiết kế như một công cụ sàng lọc và không dùng để chẩn đoán chính thức. Luôn tham khảo ý kiến chuyên gia y tế.',
     medicalAdvice: 'Lời Khuyên Y Tế:',
     medicalAdviceDetail: 'Kết quả từ công cụ này không nên thay thế cho lời khuyên, chẩn đoán hoặc điều trị y tế chuyên nghiệp.',

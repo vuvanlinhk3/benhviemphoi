@@ -41,7 +41,14 @@
 // };
 
 // ----------------------------------------
-export const analyzeImage = async (file: File) => {
+type AnalyzeResponse = {
+  result: 'Pneumonia' | 'Normal';
+  pneumonia_prob: number;
+  normal_prob: number;
+  analyzed_at: string;
+  image_path: string;
+};
+export const analyzeImage = async (file: File): Promise<AnalyzeResponse> => {
   const formData = new FormData();
   formData.append('image', file);
 
@@ -66,7 +73,8 @@ export const analyzeImage = async (file: File) => {
       result: data.result,
       pneumonia_prob: data.pneumonia_prob,
       normal_prob: data.normal_prob,
-      analyzed_at: data.timestamp || new Date().toISOString()
+      analyzed_at: data.timestamp || new Date().toISOString(),
+      image_path: data.image_path
     };
 
   } catch (error) {
@@ -90,7 +98,8 @@ export const getAnalysisHistory = async () => {
         pneumonia: item.pneumonia_prob,
         normal: item.normal_prob
       },
-      timestamp: item.analyzed_at
+      timestamp: item.analyzed_at,
+      imagePath: encodeURI(`http://localhost:5000/${item.image_path}`)
     }));
 
   } catch (error) {
